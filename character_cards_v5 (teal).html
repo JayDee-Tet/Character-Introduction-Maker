@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cast of Characters</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Righteous&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: #2d4a47;
+    min-height: 100vh;
+    padding: 2.5rem 1.5rem;
+  }
+
+  /* Argyle / diamond background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,0.04) 28px,
+        rgba(255,255,255,0.04) 30px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 28px,
+        rgba(255,255,255,0.04) 28px,
+        rgba(255,255,255,0.04) 30px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Sawtooth / zigzag decorative border */
+  .zigzag-top {
+    width: 100%;
+    height: 16px;
+    background:
+      linear-gradient(135deg, #2d4a47 25%, transparent 25%) -10px 0,
+      linear-gradient(225deg, #2d4a47 25%, transparent 25%) -10px 0,
+      linear-gradient(315deg, #2d4a47 25%, transparent 25%),
+      linear-gradient(45deg,  #2d4a47 25%, transparent 25%);
+    background-size: 20px 16px;
+    background-color: #f5ede0;
+  }
+
+  .zigzag-bottom {
+    width: 100%;
+    height: 16px;
+    background:
+      linear-gradient(135deg, #f5ede0 25%, transparent 25%) -10px 0,
+      linear-gradient(225deg, #f5ede0 25%, transparent 25%) -10px 0,
+      linear-gradient(315deg, #f5ede0 25%, transparent 25%),
+      linear-gradient(45deg,  #f5ede0 25%, transparent 25%);
+    background-size: 20px 16px;
+    background-color: #2d4a47;
+  }
+
+  .title-font    { font-family: 'Nunito', sans-serif; font-weight: 700; }
+  .display-font  { font-family: 'Righteous', sans-serif; }
+  .body-font     { font-family: 'Quicksand', sans-serif; }
+  .italic-font   { font-family: 'Nunito', sans-serif; font-style: italic; }
+  .page-title-font { font-family: 'Pacifico', cursive; }
+
+  /* Page title */
+  .page-title-wrap {
+    border: 3px solid #E9C46A;
+    position: relative;
+    background: #1a3a37;
+    margin-bottom: 2rem;
+  }
+  .page-title-wrap::before,
+  .page-title-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(233,196,106,0.35);
+    pointer-events: none;
+  }
+  .corner-deco {
+    position: absolute;
+    width: 18px; height: 18px;
+    border-color: #E9C46A;
+    border-style: solid;
+    z-index: 2;
+  }
+  .corner-deco.tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+  .corner-deco.tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+  .corner-deco.bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+  .corner-deco.br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+  /* Summary box */
+  .summary-box {
+    border: 2px solid #2A9D8F;
+    background: #f5ede0;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .summary-box::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(0,0,0,0.15);
+    pointer-events: none;
+  }
+
+  /* Section banner */
+  .section-banner {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    position: relative;
+  }
+  .banner-label {
+    background: #1a3a37;
+    border: 2px solid #E9C46A;
+    padding: 0 1.5rem 0 1rem;
+    height: 2rem;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+    position: relative;
+    z-index: 1;
+    display: table;
+  }
+  .banner-label > span {
+    display: table-cell;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .banner-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, #2A9D8F, transparent);
+    margin-left: -2px;
+  }
+
+  /* Character card */
+  .char-card {
+    display: flex;
+    gap: 0;
+    border: 2px solid #2A9D8F;
+    background: #f5ede0;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  .char-card:hover { transform: translateY(-2px); }
+  .char-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 4px solid transparent;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.12);
+    pointer-events: none;
+  }
+
+  /* Image placeholder */
+  .img-slot {
+    width: 200px;
+    min-width: 200px;
+    min-height: 220px;
+    background: #1a3a37;
+    border-right: 2px solid #2A9D8F;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .img-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .img-slot .placeholder-text {
+    text-align: center;
+    color: #bbb;
+    font-size: 0.75rem;
+    padding: 1rem;
+    pointer-events: none;
+    z-index: 1;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .img-slot .upload-icon {
+    width: 40px; height: 40px;
+    border: 2px dashed #888;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.5rem;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .img-slot:hover .upload-icon { border-color: #E9C46A; }
+  .img-slot:hover .placeholder-text { color: #E9C46A; }
+  .img-slot .img-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    font-size: 0.7rem;
+    z-index: 2;
+  }
+  .img-slot:hover .img-overlay { display: flex; }
+
+  /* Card text side */
+  .card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .name-badge {
+    background: #1a3a37;
+    padding: 0.5rem 1.25rem 0.5rem calc(4px + 1.25rem);
+    border-bottom: 2px solid #2A9D8F;
+    position: relative;
+  }
+  .name-badge::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: #F4A261;
+  }
+  .desc-area {
+    padding: 0.85rem 1.25rem 1rem;
+    flex: 1;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #222;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  /* Editable areas */
+  [contenteditable] {
+    outline: none;
+    cursor: text;
+    transition: background 0.15s;
+  }
+  [contenteditable]:hover { background: rgba(42,157,143,0.1); }
+  [contenteditable]:focus { background: rgba(42,157,143,0.18); }
+
+  /* Decorative panel separators */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0 2rem;
+    color: #2A9D8F;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-family: 'Quicksand', sans-serif;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #2A9D8F;
+  }
+
+  /* Add character button */
+  .add-btn {
+    border: 2px dashed #2A9D8F;
+    background: transparent;
+    color: #2A9D8F;
+    width: 100%;
+    padding: 1rem;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .add-btn:hover { border-color: #E9C46A; color: #E9C46A; background: rgba(233,196,106,0.05); }
+
+  /* Delete button */
+  .del-btn {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    background: rgba(0,0,0,0.6);
+    border: none;
+    color: #999;
+    font-size: 12px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 10;
+    line-height: 1;
+  }
+  .char-card:hover .del-btn { display: flex; }
+  .del-btn:hover { background: #c0392b; color: white; }
+
+  /* Export button */
+  .export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #E9C46A;
+    color: #1a3a37;
+    border: none;
+    padding: 0.5rem 1.1rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .export-btn:hover { background: #F4A261; transform: translateY(-1px); }
+  .export-btn:active { transform: translateY(0); }
+  .export-btn svg { flex-shrink: 0; }
+
+  /* Export loading overlay */
+  #export-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    font-family: 'Nunito', sans-serif;
+    color: #f5f0e8;
+  }
+  #export-overlay.active { display: flex; }
+  .export-spinner {
+    width: 36px; height: 36px;
+    border: 3px solid rgba(233,196,106,0.3);
+    border-top-color: #E9C46A;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media print {
+    body { background: white; padding: 0; }
+    body::before { display: none; }
+    .add-btn, .del-btn, .export-btn { display: none !important; }
+    .char-card:hover { transform: none; }
+    [contenteditable]:hover, [contenteditable]:focus { background: transparent; }
+  }
+
+  @media (max-width: 600px) {
+    .img-slot { width: 130px; min-width: 130px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Export loading overlay -->
+<div id="export-overlay">
+  <div class="export-spinner"></div>
+  <span style="font-size:1rem; letter-spacing:0.05em;">Generating image…</span>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Page Title -->
+  <div class="page-title-wrap" id="export-title">
+    <div class="corner-deco tl"></div>
+    <div class="corner-deco tr"></div>
+    <div class="corner-deco bl"></div>
+    <div class="corner-deco br"></div>
+    <div class="zigzag-top"></div>
+    <div style="padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <div class="title-font" style="font-size: 0.7rem; letter-spacing: 0.3em; color: #2A9D8F; text-transform: uppercase; margin-bottom: 0.25rem;">— Volume 1 —</div>
+        <h1 class="page-title-font" style="font-size: 2.5rem; color: #E9C46A; margin: 0; letter-spacing: 0.03em;" contenteditable="true">Cast of Characters</h1>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap;">
+        <div style="text-align: right; color: #2A9D8F; font-size: 0.7rem; font-family: 'Quicksand', sans-serif; font-style: italic;" contenteditable="true">Click any text to edit &nbsp;•&nbsp; Click photos to upload</div>
+        <button class="export-btn" onclick="exportSection()">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M7 1v8M4 6l3 3 3-3"/><path d="M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+          </svg>
+          Export as Image
+        </button>
+      </div>
+    </div>
+    <div class="zigzag-bottom"></div>
+  </div>
+
+  <!-- Summary Box -->
+  <div class="summary-box" id="export-summary">
+    <div style="display: flex; align-items: baseline; gap: 0.75rem; margin-bottom: 0.5rem;">
+      <span class="title-font" style="font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: #2A9D8F;">Summary</span>
+      <div style="flex:1; height: 1px; background: #ccc;"></div>
+    </div>
+    <p class="italic-font" style="font-size: 1.05rem; line-height: 1.75; color: #333; margin: 0;" contenteditable="true">
+      Write your story summary here. Describe the world, the main conflict, and what has happened so far. 
+      This text introduces new readers to the setting and the key events leading up to this volume.
+    </p>
+  </div>
+
+  <!-- ── Section 1 ── -->
+  <div id="export-section1">
+    <div class="section-banner">
+      <div class="banner-label">
+        <span class="title-font" style="font-size: 0.9rem; color: #E9C46A; letter-spacing: 0.1em;" contenteditable="true">Group One</span>
+      </div>
+      <div class="banner-line"></div>
+    </div>
+    <div id="cards-section-1"></div>
+  </div>
+
+  <button class="add-btn" onclick="addCard('cards-section-1')">
+    <span style="font-size: 1.2rem; line-height:1;">+</span> Add character
+  </button>
+
+  <!-- ── Section 2 ── -->
+  <div class="section-banner">
+    <div class="banner-label">
+      <span class="title-font" style="font-size: 0.9rem; color: #d4c9a8; letter-spacing: 0.1em;" contenteditable="true">Group Two</span>
+    </div>
+    <div class="banner-line"></div>
+  </div>
+
+  <div id="cards-section-2"></div>
+
+  <button class="add-btn" onclick="addCard('cards-section-2')">
+    <span style="font-size: 1.2rem; line-height:1;">+</span> Add character
+  </button>
+
+  <!-- Footer -->
+  <div class="divider">end of character list</div>
+
+</div>
+
+<!-- Hidden file input for image upload -->
+<input type="file" id="file-input" accept="image/*" style="display:none;">
+
+<script>
+const defaultChars1 = [
+  { name: "Protagonist Name", desc: "The main character. Describe their role, personality, and key traits here. What drives them? What do they want? What stands in their way?" },
+  { name: "Supporting Character", desc: "A key ally or companion. Describe their relationship to the protagonist and the role they play in the story." },
+  { name: "Another Character", desc: "Describe this character's background and their importance to the plot." },
+];
+const defaultChars2 = [
+  { name: "Rival or Antagonist", desc: "Describe what makes this character a compelling foil or obstacle. Their motives, history, and relationship to the protagonist." },
+  { name: "Supporting Character", desc: "Another important figure. What role do they play and how do they affect the story?" },
+];
+
+let pendingSlot = null;
+
+function makeCard(name, desc) {
+  const card = document.createElement('div');
+  card.className = 'char-card';
+
+  card.innerHTML = `
+    <button class="del-btn" onclick="this.closest('.char-card').remove()" title="Remove card">✕</button>
+    <div class="img-slot" onclick="triggerUpload(this)">
+      <div class="upload-icon">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#aaa" stroke-width="1.5">
+          <path d="M8 2v8M5 5l3-3 3 3"/>
+          <rect x="2" y="10" width="12" height="4" rx="1"/>
+        </svg>
+      </div>
+      <div class="placeholder-text">Click to<br>upload image</div>
+      <div class="img-overlay">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.5" style="margin-bottom:4px">
+          <path d="M10 4v8M7 7l3-3 3 3"/><rect x="3" y="13" width="14" height="4" rx="1"/>
+        </svg>
+        <span style="font-size:0.7rem; letter-spacing:0.05em;">Replace image</span>
+      </div>
+    </div>
+    <div class="card-content">
+      <div class="name-badge">
+        <div class="display-font" style="font-size: 1.6rem; color: #d4c9a8; letter-spacing: 0.06em; line-height:1.1;" contenteditable="true">${name}</div>
+        <div class="italic-font" style="font-size: 0.85rem; color: #aaa; margin-top:2px;" contenteditable="true">Title / Role / Affiliation</div>
+      </div>
+      <div class="desc-area" contenteditable="true">${desc}</div>
+    </div>
+  `;
+  return card;
+}
+
+function addCard(sectionId, name = 'Character Name', desc = 'Write the character description here. Include their role, key traits, and anything the reader needs to know.') {
+  document.getElementById(sectionId).appendChild(makeCard(name, desc));
+}
+
+function triggerUpload(slot) {
+  pendingSlot = slot;
+  document.getElementById('file-input').click();
+}
+
+document.getElementById('file-input').addEventListener('change', function() {
+  if (!this.files[0] || !pendingSlot) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const existing = pendingSlot.querySelector('img');
+    if (existing) existing.remove();
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    pendingSlot.insertBefore(img, pendingSlot.firstChild);
+    pendingSlot.querySelector('.placeholder-text').style.display = 'none';
+    pendingSlot.querySelector('.upload-icon').style.display = 'none';
+  };
+  reader.readAsDataURL(this.files[0]);
+  this.value = '';
+});
+
+// ── Export function ──
+async function exportSection() {
+  const overlay = document.getElementById('export-overlay');
+  overlay.classList.add('active');
+
+  // Wait for all web fonts (Pacifico, Righteous, etc.) to be ready
+  await document.fonts.ready;
+
+  // Build a temporary off-screen container with the three sections
+  const wrapper = document.createElement('div');
+  // Match the site's teal background + argyle pattern exactly
+  wrapper.style.cssText = `
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    width: 900px;
+    background: transparent;
+    padding: 2.5rem 1.5rem;
+    font-family: 'Quicksand', sans-serif;
+  `;
+
+  // Clone title, summary, section 1 (no export button)
+  const titleClone   = document.getElementById('export-title').cloneNode(true);
+  const summaryClone = document.getElementById('export-summary').cloneNode(true);
+  const sec1Clone    = document.getElementById('export-section1').cloneNode(true);
+
+  // Remove the export button and the editable hint text from the title clone
+  const expBtn = titleClone.querySelector('.export-btn');
+  if (expBtn) expBtn.parentElement.remove();
+
+  // Nudge the title h1 up slightly — Pacifico renders low in html2canvas
+  const titleH1 = titleClone.querySelector('h1');
+  if (titleH1) titleH1.style.marginBottom = '8px';
+
+  // Remove del-btn hover buttons
+  sec1Clone.querySelectorAll('.del-btn').forEach(b => b.remove());
+
+  // ── Fix banner label: html2canvas renders font metrics slightly low.
+  //    A small upward nudge corrects it without complex layout changes.
+  sec1Clone.querySelectorAll('.banner-label > span').forEach(span => {
+    span.style.paddingBottom = "15px";
+  });
+
+  // ── Fix images: html2canvas doesn't support object-fit: cover on <img>.
+  //    Swap each uploaded image to a CSS background-image on the slot div,
+  //    and set an explicit pixel height matching the live card so nothing squishes.
+  const liveCards = document.querySelectorAll('#export-section1 .char-card');
+  sec1Clone.querySelectorAll('.char-card').forEach((card, i) => {
+    const slot = card.querySelector('.img-slot');
+    if (!slot) return;
+
+    // Lock height to match the rendered card
+    const liveHeight = liveCards[i] ? liveCards[i].offsetHeight : 220;
+    slot.style.height    = liveHeight + 'px';
+    slot.style.minHeight = liveHeight + 'px';
+
+    const img = slot.querySelector('img');
+    if (img) {
+      // Replace <img> with CSS background so html2canvas handles it correctly
+      slot.style.backgroundImage    = `url('${img.src}')`;
+      slot.style.backgroundSize     = 'cover';
+      slot.style.backgroundPosition = 'center top';
+      img.remove();
+    }
+
+    // Hide the placeholder UI elements (they're invisible anyway but be safe)
+    const ph = slot.querySelector('.placeholder-text');
+    const ic = slot.querySelector('.upload-icon');
+    if (ph) ph.style.display = 'none';
+    if (ic) ic.style.display = 'none';
+  });
+
+  wrapper.appendChild(titleClone);
+
+  const gap1 = document.createElement('div');
+  gap1.style.height = '2rem';
+  wrapper.appendChild(gap1);
+
+  wrapper.appendChild(summaryClone);
+
+  const gap2 = document.createElement('div');
+  gap2.style.height = '0';
+  wrapper.appendChild(gap2);
+
+  wrapper.appendChild(sec1Clone);
+
+  document.body.appendChild(wrapper);
+
+  try {
+    // Extra tick to let the cloned layout settle
+    await new Promise(r => setTimeout(r, 300));
+
+    const scale = 2;
+    const canvas = await html2canvas(wrapper, {
+      scale,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,  // transparent — we draw the pattern underneath manually
+      logging: false,
+    });
+
+    // ── Composite: draw teal base + diamond pattern, then the captured content on top.
+    //    html2canvas silently ignores repeating-linear-gradient, so we use Canvas 2D API.
+    const W = canvas.width;
+    const H = canvas.height;
+    const final = document.createElement('canvas');
+    final.width  = W;
+    final.height = H;
+    const ctx = final.getContext('2d');
+
+    // 1. Solid teal fill
+    ctx.fillStyle = '#2d4a47';
+    ctx.fillRect(0, 0, W, H);
+
+    // 2. Diamond grid — two families of diagonal lines, matching the CSS pattern
+    const step = 56 * scale;   // same 30 px pitch as the CSS (×scale for hi-DPI)
+    ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+    ctx.lineWidth   = scale * 1.5;
+
+    ctx.beginPath();
+    for (let x = -H; x < W + H; x += step) {  // +45°
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x + H, H);
+    }
+    ctx.stroke();
+
+    ctx.beginPath();
+    for (let x = -H; x < W + H; x += step) {  // −45°
+      ctx.moveTo(x + H, 0);
+      ctx.lineTo(x, H);
+    }
+    ctx.stroke();
+
+    // 3. Content on top
+    ctx.drawImage(canvas, 0, 0);
+
+    const link = document.createElement('a');
+    link.download = 'cast-of-characters.png';
+    link.href = final.toDataURL('image/png');
+    link.click();
+  } catch(err) {
+    alert('Export failed: ' + err.message);
+  } finally {
+    document.body.removeChild(wrapper);
+    overlay.classList.remove('active');
+  }
+}
+
+// Populate default cards
+defaultChars1.forEach(c => addCard('cards-section-1', c.name, c.desc));
+defaultChars2.forEach(c => addCard('cards-section-2', c.name, c.desc));
+</script>
+</body>
+</html>
